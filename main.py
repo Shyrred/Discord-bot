@@ -1,9 +1,9 @@
 import discord
 from discord.ext import commands
-from discord_slash import ButtonStyle
-from discord_slash.utils.manage_components import *
+# from discord_slash import ButtonStyle
+# from discord_slash.utils.manage_components import *
+import identifier
 
-token = "MTAyNjE5MzA3MTE2MDk1NDk4NA.Ggcw4x.FkOOqF_pnfgJg5rshtr3M1bKq4QdlVc-PYviA0"
 intents = discord.Intents.default()
 intents.members = True
 intents.message_content = True
@@ -132,4 +132,4 @@ async def lists(ctx):
 
 
 
-bot.run(token)
+bot.run(identifier.token)
