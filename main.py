@@ -1,12 +1,12 @@
 import discord
+import asyncio
+import os
 from discord.ext import commands
-# from discord_slash import ButtonStyle
-# from discord_slash.utils.manage_components import *
+#from discord_slash import ButtonStyle
+#from discord_slash.utils.manage_components import *
 import identifier
 
-intents = discord.Intents.default()
-intents.members = True
-intents.message_content = True
+intents = discord.Intents.all()
 
 bot = commands.Bot(command_prefix="$", description="Description à venir", intents=intents)
 
@@ -35,19 +35,21 @@ async def on_message(message):
     await bot.process_commands(message)
 
 
-########################################################################################################################
-
-
-@bot.command()
-async def hello(ctx):
-    await ctx.send("Hello there !")
-
-
 @bot.command()
 async def clear(ctx, amount: int):
     msgs = [message async for message in ctx.channel.history(limit = amount+1)] #await not possible because cannot flatten async_generator
     for msg in msgs:
         await msg.delete()
+
+
+########################################################################################################################
+
+
+async def load():
+    for file in os.listdir('./cogs'):
+        if file.endswith('.py'):
+            await bot.load_extension(f'cogs.{file[:-3]}')
+
 
 
 @bot.command()
@@ -93,36 +95,6 @@ async def create(ctx, asso, *projectTitle):
     await ctx.send(embed = embed)
 
 
-@bot.command()
-async def lists(ctx):
-    buttons = [
-        create_button(
-            style = ButtonStyle.blue,
-            label = "<<",
-            custom_id = "précédent",
-        ),
-        create_button(
-            style=ButtonStyle.danger,
-            label="Quitter",
-            custom_id="non",
-        ),
-        create_button(
-            style = ButtonStyle.blue,
-            label = ">>",
-            custom_id = "suivant",
-        )
-    ]
-    action_row = create_actionrow(*buttons)
-    userAction = await ctx.send("Voilà les différentes listes de choses à faire", components=[action_row])
-
-
-
-
-
-
-
-
-
 
 # @bot.command()
 # async def test(ctx, *, listtitle):
@@ -131,5 +103,7 @@ async def lists(ctx):
 #     await ctx.send(args)
 
 
-
-bot.run(identifier.token)
+async def exec():
+    await load()
+    await bot.start(identifier.token)
+asyncio.run(exec())
