@@ -2,8 +2,6 @@ import discord
 import asyncio
 import os
 from discord.ext import commands
-#from discord_slash import ButtonStyle
-#from discord_slash.utils.manage_components import *
 import identifier
 
 intents = discord.Intents.all()
@@ -51,10 +49,7 @@ async def load():
             await bot.load_extension(f'cogs.{file[:-3]}')
 
 
-
-@bot.command()
-async def temp(ctx):
-    await ctx.send("temp cmd to keep emoji reaction reaction to msg")
+async def addList(ctx):
 
     def msgCheck(message):
         return message.author == ctx.message.author and ctx.message.channel == message.channel
@@ -63,7 +58,7 @@ async def temp(ctx):
     except:
         await ctx.send("Faute de réponse, la procédure a été interrompue par timeout.")
 
-    userCheck = await ctx.send(f"Votre réponse était {msgAnswer.content}, confirmez vous ?")
+    userCheck = await ctx.send(f"Vous voulez créer la liste : {msgAnswer.content}, confirmez vous ?")
     await userCheck.add_reaction("✅")
     await userCheck.add_reaction("❎")
 
@@ -73,10 +68,13 @@ async def temp(ctx):
         reactAnswer, user = await bot.wait_for("reaction_add", timeout = 10, check = reactCheck)
         if reactAnswer.emoji == ("❎"):
             await ctx.send("Vous avez annulé la sélection")
+            await ctx.message.delete()
         else:
-            await ctx.send("Votre confirmation a été prise en compte")
+            await ctx.send("La liste a bien été créée")
+            dbc.createList(['codicam'],[msgAnswer.content],[''])
     except:
         await ctx.send("Une erreur est survenue, votre choix n'a pas pu être pris en compte")
+
 
 
 ########################################################################################################################
@@ -95,13 +93,11 @@ async def create(ctx, asso, *projectTitle):
     await ctx.send(embed = embed)
 
 
-
 # @bot.command()
 # async def test(ctx, *, listtitle):
 #     embed = discord.Embed(title = listtitle,  )
 #
 #     await ctx.send(args)
-
 
 async def exec():
     await load()

@@ -35,8 +35,7 @@ def fetchLists(userAsso):
     req = "SELECT title, asso FROM todo_db.lists WHERE (asso=%s)"
     cur.execute(req, userAsso)
     datas = cur.fetchall()
-    for data in datas:
-        return data
+    return datas
 
 
 def getList(getlistAsso, getlistTitle):
