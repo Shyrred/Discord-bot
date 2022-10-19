@@ -2,6 +2,7 @@ import discord
 import asyncio
 import os
 
+from datetime import datetime, timedelta
 from discord.ext import commands
 
 import identifier
@@ -17,7 +18,7 @@ bot = commands.Bot(command_prefix="$", description="Description à venir", inten
 @bot.event
 async def on_ready():
     print("Ready to serve !")
-    await scheduled_tuesday_reminder()
+    await scheduled_reminder()
 
 
 @bot.event
@@ -79,6 +80,19 @@ async def addList(ctx):
     except:
         await ctx.send("Une erreur est survenue, votre choix n'a pas pu être pris en compte")
 
+
+async def scheduled_reminder():
+    while True:
+        now = datetime.now()
+        next = now + timedelta(days=7)
+        next.replace(hour=10, minute=00)
+        waiting_time = (next-now).total_seconds()
+        await asyncio.sleep(waiting_time)
+
+        channel = bot.get_channel(767812057243713566)
+
+        await channel.send("Hey @everyone, on est mardi ! Réunion hebdomadaire au Fablab  à 18h !! Venez avancer vos projets "
+                           "et discuter !")
 
 
 ########################################################################################################################

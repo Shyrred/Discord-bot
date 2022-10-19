@@ -1,3 +1,4 @@
+from identifier import db
 
 cur = db.cursor()
 
@@ -71,7 +72,7 @@ def delList(dellistAsso, dellistTitle):
 
 
 ################################################  TASK FUNCTIONS  #####################################################
-#functions are basically the same but not on with the same scope and variables.
+#functions are basically the same but not on the same scope and variables.
 
 
 def fetchTasks(userAsso, listTitle):
