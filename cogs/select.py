@@ -1,7 +1,7 @@
 import discord
 from discord.ui import Select, View, select
 from discord.ext import commands
-import Database_Model as dbc
+from TODO import Database_Model as dbc
 
 
 class selectAssoMenu(discord.ui.Select):

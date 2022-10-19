@@ -1,8 +1,11 @@
 import discord
 import asyncio
 import os
+
 from discord.ext import commands
+
 import identifier
+import Database_Model as dbc
 
 intents = discord.Intents.all()
 
@@ -14,6 +17,7 @@ bot = commands.Bot(command_prefix="$", description="Description à venir", inten
 @bot.event
 async def on_ready():
     print("Ready to serve !")
+    await scheduled_tuesday_reminder()
 
 
 @bot.event
@@ -65,9 +69,9 @@ async def addList(ctx):
     def reactCheck(reaction, user):
         return ctx.message.author == user and userCheck.id == reaction.message.id and (str(reaction.emoji) == "✅" or str(reaction.emoji) == "❎")
     try:
-        reactAnswer, user = await bot.wait_for("reaction_add", timeout = 10, check = reactCheck)
+        reactAnswer, user = await bot.wait_for("reaction_add", timeout = 20, check = reactCheck)
         if reactAnswer.emoji == ("❎"):
-            await ctx.send("Vous avez annulé la sélection")
+            await ctx.send("Vous avez annulé la création de la liste")
             await ctx.message.delete()
         else:
             await ctx.send("La liste a bien été créée")
@@ -80,17 +84,17 @@ async def addList(ctx):
 ########################################################################################################################
 
 
-@bot.command()
-async def create(ctx, asso, *projectTitle):
-    listTitle = ' '.join(projectTitle)
-    assoText = ' '.join(asso)
-    embed = discord.Embed(title = listTitle, description = 'toDoNotes\n\n', colour=0xff6500)
-    embed.set_author(name = ctx.author.name)
-
-    embed.add_field(name = 'Tâche à faire numéro 1', value = 'Tâche à faire effectivement', inline = True)
-
-    embed.set_footer(text = assoText)
-    await ctx.send(embed = embed)
+# @bot.command()
+# async def create(ctx, asso, *projectTitle):
+#     listTitle = ' '.join(projectTitle)
+#     assoText = ' '.join(asso)
+#     embed = discord.Embed(title = listTitle, description = 'toDoNotes\n\n', colour=0xff6500)
+#     embed.set_author(name = ctx.author.name)
+#
+#     embed.add_field(name = 'Tâche à faire numéro 1', value = 'Tâche à faire effectivement', inline = True)
+#
+#     embed.set_footer(text = assoText)
+#     await ctx.send(embed = embed)
 
 
 # @bot.command()
@@ -100,6 +104,7 @@ async def create(ctx, asso, *projectTitle):
 #     await ctx.send(args)
 
 async def exec():
+    dbc.createTables()
     await load()
     await bot.start(identifier.token)
 asyncio.run(exec())
